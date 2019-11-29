@@ -2,6 +2,7 @@ import json
 import boto3
 
 def get_instances(e,c):
+    print(json.dumps(e))
     client = boto3.client('ec2')
     results = client.describe_instances()
     # print(results)
