@@ -10,9 +10,9 @@
 #    docs.serverless.com
 #
 # Happy Coding!
-custom:
-  pythonRequirements:
-    dockerizePip: true
+#custom:
+#  pythonRequirements:
+#    dockerizePip: true
 
 service: aws-python3 # NOTE: update this with your service name
 
@@ -69,10 +69,10 @@ functions:
           method: get
       - alexaSkill: amzn1.ask.skill.7c66ec0b-38bc-4255-9b1d-d74eecdab282
   getinstances:
-    handler: alexa.get_instances
+    handler: functions.get_instances
     events:
       - http:
-          path: alexa/instances
+          path: aws/instances
           method: get
 
 
@@ -122,5 +122,5 @@ functions:
 #       Description: "Description for the output"
 #       Value: "Some output value"
 
-plugins:
-  - serverless-python-requirements
+#plugins:
+#  - serverless-python-requirements
