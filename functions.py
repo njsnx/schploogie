@@ -2,33 +2,59 @@ import json
 import boto3
 
 def get_instances(e,c):
-    print(json.dumps(e))
     client = boto3.client('ec2')
-    results = client.describe_instances()
-    # print(results)
-    processed_instances = []
+    if isinstance(e, dict):
+        query_string_prameters = e['queryStringParameters']
+        # null = None
+        # key: value
+        # state: running
+        state = None
+        args = {}
+        if query_string_prameters:
+            state = query_string_prameters.get('state')
 
-    for reservations in results['Reservations']:
-        # print(reservations)
-        for instance in reservations['Instances']:
-            processed_instance = {}
+        if state:
+            args = {
+                "Filters":[
+                    {
+                        "Name": 'instance-state-name',
+                        "Values": [
+                            state
+                        ]
+                    }
+                ]
+            }
+        
+        
+        results = client.describe_instances(**args)
 
-            processed_instance['instance_id'] = instance['InstanceId']
-            processed_instance['instance_state'] = instance['State']['Name']
+        processed_instances = []
 
-            for tags in instance['Tags']:
-                if tags["Key"] == 'Name':
-                    # print(tags["Value"])
-                    processed_instance['name'] = tags['Value']
-            processed_instances.append(processed_instance)
+        for reservations in results['Reservations']:
+            # print(reservations)
+            for instance in reservations['Instances']:
+                processed_instance = {}
 
-    response = {
-        'statusCode': 200,
-        'body':json.dumps(processed_instances)
-    }
+                processed_instance['instance_id'] = instance['InstanceId'] 
+                processed_instance['instance_state'] = instance['State']['Name']
+                
+                for tags in instance['Tags']:
+                    if tags["Key"] == 'Name':
+                        # print(tags["Value"])
+                        processed_instance['name'] = tags['Value']
+                processed_instances.append(processed_instance)
+        
+        response = {
+            'statusCode': 200,
+            'body': {
+                "instances": json.dumps(
+                processed_instances
+            )
+            }
+        }
 
-    print(json.dumps(response))
-    return response
+        print(json.dumps(response))
+        return response
 
     #
     # {
@@ -43,11 +69,6 @@ def get_instances(e,c):
     #     }
     # }
 
-def get_health_events(e, c):
-    client = boto3.client('health')
-    health = client.describe_events()
-    print(health)
-
 if __name__ == '__main__':
-
-    get_instances(1,2)
+    
+    get_instances({'queryStringParameters': {'state': 'running'}},2)
