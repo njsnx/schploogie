@@ -13,22 +13,18 @@ def get_instances(e,c):
         for instance in reservations['Instances']:
             processed_instance = {}
 
-            processed_instance['instance_id'] = instance['InstanceId'] 
+            processed_instance['instance_id'] = instance['InstanceId']
             processed_instance['instance_state'] = instance['State']['Name']
-            
+
             for tags in instance['Tags']:
                 if tags["Key"] == 'Name':
                     # print(tags["Value"])
                     processed_instance['name'] = tags['Value']
             processed_instances.append(processed_instance)
-    
+
     response = {
         'statusCode': 200,
-        'body': {
-            "instances": json.dumps(
-            processed_instances
-        )
-        }
+        'body':json.dumps(processed_instances)
     }
 
     print(json.dumps(response))
@@ -53,5 +49,5 @@ def get_health_events(e, c):
     print(health)
 
 if __name__ == '__main__':
-    
+
     get_instances(1,2)
