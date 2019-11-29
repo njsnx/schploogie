@@ -46,7 +46,10 @@ def get_instances(e,c):
 
         response = {
             'statusCode': 200,
-            'body': json.dumps({"instances": processed_instances})
+            'body': json.dumps({"instances": processed_instances}),
+            'headers':{
+             "Access-Control-Allow-Origin":"*"
+            }
         }
 
         print(json.dumps(response))
